@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="style.css">
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div class="main-text">
+				Задача 5. Додаток містить масив об’єктів (логін, пароль) --  інсуючі логіни і паролі. 
+				Користувач вводить логін і пароль, а програма повідомляє чи може користувач бути 
+				авторизованим (чи є він одним з масиву).
+			</div>
+			<h1 class="title">Задача 5</h1>
+			<div class="form-field">
+				<div class="row">
+					<label class="label">
+						<span>логін:</span>
+						<input class="input" type="text" v-model="inputName">
+					</label>
+				</div>
+				<div class="row">
+					<label class="label">
+						<span>пароль:</span>
+						<input class="input" type="password" v-model="inputPass">
+					</label>
+				</div>
+				<button class="button" @click="userAuth">Увійти</button>
+				<div class="box">
+					<a href="index.html" class="back">Повернутись до навігації</a>
+				</div>
+			</div>
+			<div class="message access" v-if="this.permissionAccess">Вітаю, {{name}}!</div>
+			<div class="message cancel" v-if="this.permissionCancel">Вхід не дозволено</div>
+			<div class="message cancel" v-if="this.permissionEmpty">Заповніть поля</div>
+		</div>
+		<script>
+			const { createApp } = Vue
+
+			createApp({
+				data() {
+					return {
+						inputName: null,
+						inputPass: null,
+						permissionAccess: false,
+						permissionCancel: false,
+						permissionEmpty: false,
+						name: null,
+
+						users: [
+							{
+								username: "Vika",
+								password: "test3",
+							},
+							{
+								username: "Olena",
+								password: "test1",
+							},
+							{
+								username: "Taras",
+								password: "test2",
+							}
+						]
+					}
+				},
+				methods: {
+					userAuth(){
+						if(this.inputName !== null || this.inputPass !== null){
+							var pass,
+							username,
+							flag = false;
+
+							for(var i = 0; i < this.users.length; i++){
+								//name
+								for(var j = 0; j < this.users[i].username.length; j++){
+									username = this.users[i].username;
+								}
+								
+								// //pass
+								for(var j = 0; j < this.users[i].password.length; j++){
+									pass = this.users[i].password;
+								}
+
+								// //conclusion
+								if(this.inputName === username && this.inputPass === pass){
+									flag = true;
+									this.permissionAccess = true;
+									this.permissionCancel = false;
+									this.permissionEmpty = false;
+
+									this.name = this.inputName;
+
+									this.inputName = null;
+									this.inputPass = null;
+								}
+							}
+
+							if(!flag){
+								this.permissionAccess = false;
+								this.permissionCancel = true;
+								this.permissionEmpty = false;
+							}
+						} else {
+							this.permissionEmpty = true;
+							this.permissionCancel = false;
+							this.permissionAccess = false;
+						}
+					}
+				}
+			}).mount('#app')
+		</script>
+	</body>
+</html>

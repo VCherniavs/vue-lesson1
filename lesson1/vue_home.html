@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="style.css">
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+	<div id="app">
+		<div class="main-text">
+			Задача 1. Вводиться кількість пасажирів. Вивести:
+			скільки потрібно автобусів (кожен автобус на 20 місць)
+			скільки пляшок води (кожному пасажиру 2 пляшки)
+			скільки бутербродів (кожному пасажиру 3 бутерброди)
+		</div>
+		<h1 class="title">Задача 1</h1>
+		<div class="form-field">
+			<label>
+				<span class="title">Пасажири:</span>
+				<input class="input" min="1" type="number" v-model="humanSum">
+			</label>
+			<div class="field_list">
+				<div class="row">
+					Автобуси:
+					<span>{{ bus }} <sub>шт.</sub></span>
+				</div>
+				<div class="row">
+					Вода:
+					<span>{{ water }} <sub>пляшок</sub></span>
+				</div>
+				<div class="row">
+					Бутерброди:
+					<span>{{ eat }} <sub>шт.</sub></span>
+				</div>
+			</div>
+			<div class="box">
+				<a href="index.html" class="back">Повернутись до навігації</a>
+			</div>
+		</div>
+	</div>
+	<script>
+	const { createApp } = Vue
+
+	createApp({
+		data() {
+			return {
+				humanSum: null,
+				busLength: 20,
+				waterCount: 2,
+				eatCount: 3,
+			}
+		},
+
+		computed: {
+			bus() {
+				let num = this.humanSum / this.busLength;
+				if(this.humanSum > 0){
+					return (Math.ceil(num));
+				} else {
+					return (0);
+				}
+			},
+			water() {
+				if(this.humanSum > 0){
+					return (this.humanSum * this.waterCount)
+				} else {
+					return (0);
+				}
+			},
+			eat() {
+				if(this.humanSum > 0){
+					return (this.humanSum * this.eatCount).toFixed();
+				} else {
+					return (0);
+				}
+			},
+		},
+
+		methods: {
+			//чому не працює?
+			onFocus() {
+				this.humanSum = 0
+			}
+		},
+	}).mount('#app')
+	</script>
+	</body>
+</html>

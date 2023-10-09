@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="style.css">
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+	<div id="app">
+		<div class="main-text">
+			Задача 3. Задано початок та кінець діапазону. При натисканні на
+			кнопку випадковим чином генерувати значення з вказаного діапазону та відображати його.
+		</div>
+		<h1 class="title">Задача 3</h1>
+		<div class="form-field">
+			<h3 class="title">Діапазон чисел:</h3>
+			<div class="cols">
+				<div class="col">
+					<input class="input" type="number" min="1" v-model="fixedMinNumber" placeholder="Початок діапазону">
+				</div>
+				<div class="col">
+					<input class="input" type="number" min="1" v-model="fixedMaxNumber" placeholder="Kінець діапазону">
+				</div>
+			</div>
+			<button class="button" @click="number()" :disabled='isDisabled'>Random number</button>
+			<div class="field_number">{{randomNumber}}</div>
+			<div class="box">
+				<a href="index.html" class="back">Повернутись до навігації</a>
+			</div>
+		</div>
+	</div>
+	<script>
+	const { createApp } = Vue
+
+	createApp({
+		data() {
+			return {
+				randomNumber: '',
+				fixedMinNumber: null,
+				fixedMaxNumber: null
+			}
+		},
+		computed: {
+			isDisabled(){
+				if(this.fixedMinNumber === null || this.fixedMaxNumber === null){
+					return true;
+				}
+			}
+		},
+		methods: {
+			number() {
+				this.randomNumber = Math.floor(this.fixedMinNumber + Math.random() * (this.fixedMaxNumber - this.fixedMinNumber + 1));
+			},
+		}
+	}).mount('#app')
+	</script>
+	</body>
+</html>

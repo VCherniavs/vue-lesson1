@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="style.css">
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<div id="app">
+			<div class="main-text">
+				Задача 4. “Рахунок у банку”
+				Вимоги:
+				1) Спочатку сума дорівнює 0грн. Змінити суму у гривнях можна або зарахуванням на рахунок, або зняттям.
+				2) Сума автоматично переводиться у долари та євро (фіксований курс задається у data).
+				3) можливість зарахувати суму (контролювати, щоб не була від’ємною)
+				4) можливість зняти (щоб не можна зняти більше ніж є на рахунку)
+				5) при виконанні зняття і зарахування коштів вираховувати 3% від суми (відображати кількість відсотків автоматично)
+				При зміні суми :
+				- якщо було зняття, то суму відоражати червоним
+				- якщо було зарахування, то суму відображати зеленим
+				Якщо сума валюти менша за 100 то відображати червоним кольором, інакше - зеленим
+			</div>
+			<h1 class="title">Задача 4</h1>
+			<div class="form-field">
+				<div class="balance">
+					Сума на рахунку: 
+					<span>
+						<em>{{ getBalance }}</em>
+						<sup v-if="successRefill" class="notify refill">+{{ changeBalance }}</sup>
+						<sup v-if="successWithdraw" class="notify withdraw">-{{ changeBalance }}</sup>
+					</span>
+				</div>
+				<div class="wrap">
+					<div class="info">Поповнення:</div>
+					<div class="group">
+						<input type="number" class="input" v-model="refillAmount">
+						<button @click="refillBalance">Поповнити</button>
+					</div>
+					<div class="error" v-if="errorRefill">Невірна сума</div>
+				</div>
+				<div class="wrap">
+					<div class="info">Зняття:</div>
+					<div class="group">
+						<input type="number" class="input" v-model="withdrawAmount">
+						<button class="second" @click="withdrawBalance()">Зняти</button>
+					</div>
+					<div class="error" v-if="errorWithdraw">Недостатньо коштів</div>
+				</div>
+				<div>
+					<div class="item"><strong>Комісія за операції 3%:</strong> {{ commission }}</div>
+					<div class="item">
+						<strong>Сума USD: </strong>
+						<span :class="{refill: currencyUp, withdraw: currencyDown}"> {{ dollarAmount }} </span>
+					</div>
+					<div class="item">
+						<strong>Сума EUR: </strong>
+						<span :class="{refill: currencyUp, withdraw: currencyDown}"> {{ euroAmount }} </span>
+					</div>
+				</div>
+				<div class="box">
+					<a href="index.html" class="back">Повернутись до навігації</a>
+				</div>
+			</div>
+		</div>
+		<script>
+			const { createApp } = Vue
+
+			createApp({
+				data() {
+					return {
+						balance: 0,
+						getBalance: 0,
+						refillAmount: null,
+						withdrawAmount: null,
+						commission: 0,
+						dollar: 37,
+						// euroRate: 1.2,
+						euro: 40,
+						changeBalance: null,
+						errorWithdraw: false,
+						errorRefill: false,
+						successRefill: false,
+						successWithdraw: false,
+						currencyUp: false,
+						currencyDown: false,
+						currencyNum: 100
+					}
+				},
+				computed: {
+					dollarAmount() {
+						let currency = this.balance / this.dollar;
+
+						if(currency < this.currencyNum){
+							this.currencyUp = false,
+							this.currencyDown = true;
+						}
+						// return (currency).toFixed(2);
+						return (currency).toFixed(2);
+					},
+					euroAmount() {
+						// let currency = this.balance / this.euroRate * 1.2;
+						let currency = this.balance / this.euro;
+
+						if(currency >= this.currencyNum){
+							this.currencyUp = true,
+							this.currencyDown = false;
+						}
+						return (currency).toFixed(2);
+					}
+				},
+				methods: {
+					refillBalance() {
+						if (this.refillAmount > 0) {
+							const refillCommission = this.refillAmount * 3 / 100,
+							totalRefillAmount = this.refillAmount - refillCommission;
+
+							this.changeBalance = totalRefillAmount;
+							
+							this.balance += totalRefillAmount;
+							this.getBalance = this.balance.toFixed(2);
+
+   							this.commission = (refillCommission).toFixed(2);
+
+							this.refillAmount = null;
+
+							this.successRefill = true;
+							this.successWithdraw = false;
+							this.errorRefill = false;
+						} else {
+							this.errorRefill = true;
+
+							this.successRefill = false;
+							this.successWithdraw = false;
+							this.commission = 0;
+						}
+					},
+					withdrawBalance() {
+						if (this.withdrawAmount > 0 && this.withdrawAmount <= this.balance) {
+							const refillCommission = this.withdrawAmount * 3 / 100,
+							totalRefillAmount = this.withdrawAmount - refillCommission;
+
+							this.changeBalance = totalRefillAmount;
+							
+							this.balance -= this.withdrawAmount;
+							this.getBalance = this.balance.toFixed(2);
+
+							this.commission = (refillCommission).toFixed(2);
+
+							this.withdrawAmount = null;
+
+							this.successWithdraw = true;
+							this.successRefill = false;
+							this.errorWithdraw = false;
+						} else {
+							this.errorWithdraw = true;
+
+							this.successWithdraw = false;
+							this.successRefill = false;
+							this.commission = 0;
+						}
+					}
+				}
+			}).mount('#app')
+		</script>
+	</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="style.css">
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+	<div id="app">
+		<div class="main-text">
+			Задача 2. Вводиться номер місяця.
+			Автоматично виводити рекомендований одяг (зима – пальто, літо – шорти ….).
+			Також автоматично виводити зображення з відповідним зображенням лісу (зима – ліс зі снігом, осінь – жовтий ліс, …).
+		</div>
+		<h1 class="title">Задача 2</h1>
+		<div class="form-field">
+			<label>
+				<span class="title">Сезон</span>
+				<input class="input" type="number" min="1" v-model="seasonCount">
+			</label>
+			<div v-html="season"></div>
+			<div class="box">
+				<a href="index.html" class="back">Повернутись до навігації</a>
+			</div>
+		</div>
+	</div>
+	<script>
+	const { createApp } = Vue
+
+	createApp({
+		data() {
+			return {
+				seasonCount: null,
+				seasonData: [
+					{
+						name: "Зима",
+						count: [12, 1, 2],
+						clothes: "Шуба" ,
+						img: "https://watchandlearn.scholastic.com/content/dam/classroom-magazines/watchandlearn/videos/earth-and-space/seasons/signs-of-winter/Signs-of-Winter.jpg"
+					},
+					{
+						name: "Весна",
+						count: [3, 4, 5],
+						clothes: "Туфлі",
+						img: "https://res.cloudinary.com/dk-find-out/image/upload/q_80,w_1920,f_auto/MA_00031467_hrit6x.jpg"
+					},
+					{
+						name: "Літо",
+						count: [6, 7, 8],
+						clothes: "Купальник",
+						img: "https://media.cntraveler.com/photos/5ca2606227413200230736ae/16:9/w_2560%2Cc_limit/Summer-Travel_GettyImages-1028278382.jpg"
+					},
+					{
+						name: "Осінь",
+						count: [9, 10, 11],
+						clothes: "Куртка" ,
+						img: "https://images.radio.com/aiu-media/GettyImages1259141694-29f8600b-8cec-4a87-9238-a6ea3203fd04.jpg?width=800"
+					}
+				]
+			}
+		},
+
+		computed: {
+			season() {
+				if(this.seasonCount){
+					let notFound = false;
+
+					for(var i = 0; i < this.seasonData.length; i++ ){
+						for(var j = 0; j < this.seasonData[i].count.length; j++) {
+							if(this.seasonCount === this.seasonData[i].count[j]) {
+								notFound = true;
+
+								return `<h4 class="title">${this.seasonData[i].name} - ${this.seasonData[i].clothes}</h4> <img src="${this.seasonData[i].img}" alt="${this.seasonData[i].name}" />`
+							}
+						}
+					}
+
+					if(!notFound) {
+						return `<div class="bottom">Немає результатиів</div>`
+					}
+				}
+
+				if(this.seasonCount == 0 && this.seasonCount !== '') {
+					return `<div class="bottom">Немає результатиів</div>`
+				}
+			}
+		}
+	}).mount('#app')
+	</script>
+	</body>
+</html>
