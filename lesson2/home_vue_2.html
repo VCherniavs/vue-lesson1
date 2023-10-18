@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			.form-field{
+				margin: 0 auto;
+				max-width: 400px;
+				padding-bottom: 30px;
+			}
+			.main-text {
+				font-size: 18px;
+				background: #d1d1d1;
+				padding: 5px;
+				margin-bottom: 30px;
+				text-align: center;
+			}
+			h1.title {
+				margin-bottom: 10px;
+				font-size: 30px;
+				text-align: center;
+			}
+			.text {
+				font-size: 16px;
+				color: gray;
+				margin-bottom: 5px;
+				font-weight: 600;
+			}
+			select {
+				width: 100%;
+				height: 36px;
+				border-radius: 20px;
+				background: rgb(161, 219, 161);
+				margin-bottom: 15px;
+				border: 1px solid grey;
+				padding: 10px;
+			}
+			.wrap-choice {
+				display: flex;
+				flex-direction: column;
+			}
+			label {
+				margin-bottom: 10px;
+			}
+			label span {
+				margin-left: 5px;
+			}
+			label:last-child {
+				margin-bottom: 0;
+			}
+			img {
+				margin-bottom: 10px;
+			}
+			.back {
+				display: block;
+				background: rgb(85, 173, 85);
+				padding: 10px 20px;
+				text-align: center;
+				border-radius: 10px;
+				text-decoration: none;
+				transition: background .3s;
+				color: #fff;
+    			margin: 10px auto 0;
+			}
+			.back:hover {
+				background: rgb(86, 221, 86);
+			}
+
+		</style>
+	<div id="app">
+		<div class="main-text">
+			Задача 2. З випадаючого списку вибираємо клас квитка у літаку. Якщо <br> 1) бізнес -  виводимо елементи для вибору газети та коньяку (якщо вибрано коньяк, то запропонувати закуску (так/ні)), 
+			на фоні зображення бізнес кают <br>
+			2) економ – виводимо елементи для вибору типу пива і чипсів, на фоні хмарки.
+		</div>
+		<h1 class="title">Задача 2</h1>
+		<div class="form-field">
+			<div class="text">Оберіть клас квитків на літак:</div>
+			<select v-model="ticketClass">
+				<option value="" selected>Оберіть варіант</option>
+				<option value="econom">економ</option>
+				<option  value="bussines">бiзнес</option>
+			</select>
+			<template v-if="businessClass">
+				<select v-model="businessClassVariant" class="select">
+					<option value="" selected>Оберіть варіант</option>
+				   <option value="newspaper" selected>Газети</option>
+				   <option value="drinkBusiness">Коньяк</option>
+				</select>
+			 </template>
+			 <template v-if="economClass">
+				<img style="width: 100%; height: 100%; display: block; object-fit: cover;" src="https://images.pexels.com/photos/2114014/pexels-photo-2114014.jpeg?cs=srgb&dl=pexels-magda-ehlers-2114014.jpg&fm=jpg" alt="image">
+				<select v-model="economClassVariant" class="select">
+					<option value="" selected>Оберіть варіант</option>
+				   <option value="drinkEconom" selected>Пиво</option>
+				   <option value="snackEconom">Чипси</option>
+				</select>
+			 </template>
+			 <template v-if="snackAdd">
+				<div class="bussines-back">
+					<img style="width: 100%; height: 100%; display: block; object-fit: cover;" v-if="businessClassVariant" src="https://www.usatoday.com/gcdn/presto/2023/02/10/USAT/a2d610c4-c2ac-4fe7-a654-97e790049fb1-Polaris.jpeg" alt="">
+					<div class="text">Бажаєте додати закуску?</div>
+					<div class="wrap-choice">
+						<label>
+							<input type="radio" name="choice">
+							<span>Hi</span>
+						</label>
+						<label>
+							<input type="radio" name="choice">
+							<span>Так</span>
+						</label>
+					</div>
+				</div>
+			 </template>
+			 <div class="box">
+				<a href="index.html" class="back">Повернутись до навігації</a>
+			</div>
+		</div>
+	</div>
+	<script>
+	const { createApp } = Vue
+
+	const app = createApp({
+        data() {
+            return {
+                businessClassVariant: '',
+				economClassVariant: '',
+				ticketClass: '',
+				businessSnackAdd: '',
+            };
+        },
+        computed: {
+			economClass() {
+				this.businessClassVariant = '';
+				return this.ticketClass === "econom";
+			},
+			businessClass() {
+				this.economClassVariant = '';
+				return this.ticketClass === "bussines"
+			},
+			snackAdd() {
+				console.log(this.businessClassVariant)
+				return this.businessClassVariant === "drinkBusiness"
+			}
+		}
+    }).mount('#app');
+	</script>
+	</body>
+</html>

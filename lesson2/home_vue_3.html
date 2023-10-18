@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+				font-family: system-ui, -apple-system, sans-serif;
+			}
+			.form-field{
+				margin: 0 auto;
+				max-width: 400px;
+				padding: 10px;
+			}
+			.main-text {
+				font-size: 18px;
+				background: #d1d1d1;
+				padding: 5px;
+				margin-bottom: 30px;
+				text-align: center;
+			}
+			h1.title {
+				margin-bottom: 10px;
+				font-size: 30px;
+				text-align: center;
+			}
+			.back {
+				display: block;
+				background: rgb(85, 173, 85);
+				padding: 10px 20px;
+				text-align: center;
+				border-radius: 10px;
+				text-decoration: none;
+				transition: background .3s;
+				color: #fff;
+    			margin: 25px auto 0;
+			}
+			.back:hover {
+				background: rgb(86, 221, 86);
+			}
+			.false-answer {
+				box-shadow: inset 0 0 0 4px red;
+			}
+			.false-answer .info {
+				color: red;
+			}
+			.true-answer .info {
+				color: green;
+			}
+			.true-answer {
+				box-shadow: inset 0 0 0 4px green;
+			}
+			.form-group {
+				/* display: flex; */
+				/* align-items: center; */
+				margin-bottom: 10px;
+			}
+			.wrap-image{
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin-bottom: 10px;
+				padding-bottom: 50%;
+				position: relative;
+			}
+			.wrap-image img{
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				width: 100%;
+				height: 100%;
+				object-fit: contain;
+			}
+			.wrap-box {
+				padding: 10px;
+			}
+			.name {
+				font-weight: 600;
+				margin-bottom: 10px;
+				color: grey;
+				font-size: 18px;
+				text-align: center;
+			}
+			label {
+				font-size: 16px;
+				font-weight: 600;
+				color: black;
+				margin-right: 5px;
+			}
+			label span{
+				display: block;
+				margin-bottom: 5px;
+			}
+			input {
+				width: 100%;
+				padding: 10px;
+				border: 1px solid gray;
+				border-radius: 10px;
+			}
+			.btn {
+				width: 100%;
+				padding: 10px;
+				background: #668eec;
+				color: #fff;
+				font-weight: 600;
+				border: none;
+				border-radius: 10px;
+				transition: background .3s;
+				cursor: pointer;
+			}
+			.btn:hover {
+				background: #3a67ce;
+			}
+			.info {
+				font-weight: 700;
+				font-size: 18px;
+				text-align: center;
+				color: red;
+			}
+
+		</style>
+	<div id="app">
+		<div class="main-text">
+			Задача 3. Елемент тренажера англійської. Виводимо зображення елемента і слово. <br>
+			Користувач вводить відповідь. Якщо вірно – відтворюємо фразу «Добре. Молодець!» <br>
+			(і додаємо зелену рамку до елемента), якщо ні - то відтворюємо фразу «Невірно, спробуйте ще раз» (і додаємо червону рамку).
+		</div>
+		<h1 class="title">Задача 3</h1>
+		<div class="form-field">
+			<div :class="['wrap-box', answerClass]">
+				<div class="info" v-if="resultAlert">
+                    {{resultAlert}}
+                </div>
+                <div class="wrap-image">
+                    <img :src="wordBox.image" alt="">
+                </div>
+                <div class="name">
+                    {{wordBox.word}}
+                </div>
+				<div>
+                    <div class="form-group">
+                        <label>
+							<span>Переклад:</span>
+							<input type="text" v-model="translatedWord">
+						</label>
+                        
+                    </div>
+                </div>
+				<button class="btn" @click="checkAnswer">Перевірити</button>
+			</div>
+			<a href="index.html" class="back">Повернутись до навігації</a>
+		</div>
+	</div>
+	<script>
+	const { createApp } = Vue;
+	const APPLIST = [
+		{
+			id: 1,
+			image: 'https://unblast.com/wp-content/uploads/2022/11/Avocado-Illustration.jpg',
+			word: 'Avocado',
+			translates: ['Авокадо']
+		},
+		{
+			id: 2,
+			image: 'https://unblast.com/wp-content/uploads/2022/11/Carrot-Plant-Illustration.jpg',
+			word: 'Сarrot',
+			translates: ['Морква']
+		},
+		{
+			id: 3,
+			image: 'https://unblast.com/wp-content/uploads/2022/11/Cucumber-Illustration.jpg',
+			word: 'Cucumber',
+			translates: ['Огірок']
+		}
+	]
+
+	const RESULT_MESSAGE = {
+            success: 'Добре. Молодець!',
+            error: 'Невірно, спробуйте ще раз',
+			warning: 'Заповніть поле'
+    
+		}
+	const app = createApp({
+            data() {
+                return {
+                    translatedWord: null,
+                    checkResult: null,
+                }
+            },
+			computed: {
+                wordBox() {
+                    const randomNumber = Math.floor(Math.random() * (APPLIST.length));
+
+                    return APPLIST[randomNumber]
+                },
+                resultAlert() {
+                    return RESULT_MESSAGE[this.checkResult]
+                },
+				answerClass () {
+					if(this.checkResult == 'success') {
+						return 'true-answer';
+					}
+					else if (this.checkResult == 'error') {
+						return 'false-answer';
+					}
+					 else {
+						return 'static'
+					}
+				}
+            },
+            methods: {
+				checkAnswer() {
+					if (this.translatedWord) {
+						const translated = this.translatedWord.trim().toLowerCase();
+						const isCorrect = this.wordBox.translates.some(translation => translation.toLowerCase() === translated);
+
+						this.checkResult = isCorrect ? 'success' : 'error';
+					} else {
+						this.checkResult = 'warning';
+					}
+				}
+
+			}
+        }).mount('#app');
+	</script>
+	</body>
+</html>

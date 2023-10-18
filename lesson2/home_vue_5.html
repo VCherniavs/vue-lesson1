@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+				font-family: system-ui, -apple-system, sans-serif;
+			}
+			.form-field{
+				margin: 0 auto;
+				max-width: 1000px;
+				padding: 10px;
+			}
+			.main-text {
+				font-size: 18px;
+				background: #d1d1d1;
+				padding: 5px;
+				margin-bottom: 30px;
+				text-align: center;
+			}
+			h1.title {
+				margin-bottom: 10px;
+				font-size: 30px;
+				text-align: center;
+			}
+			.back {
+				display: block;
+				background: rgb(85, 173, 85);
+				padding: 10px 20px;
+				text-align: center;
+				border-radius: 10px;
+				text-decoration: none;
+				transition: background .3s;
+				color: #fff;
+    			margin: 25px auto 0;
+			}
+			.back:hover {
+				background: rgb(86, 221, 86);
+			}
+			.result-list {
+				display: flex;
+			}
+			img {
+				width: 40px;
+				height: 40px;
+				object-fit: contain;
+				flex-grow: 0;
+				flex-shrink: 0;
+				margin-right: 5px;
+			}
+			.headline {
+				font-size: 20px;
+				font-weight: 700;
+				display: inline-flex;
+				vertical-align: top;
+				color: #0023c2;
+				margin-bottom: 5px;
+				text-decoration: none;
+			}
+			.subtitle {
+				display: flex;
+				margin-bottom: 5px;
+				font-size: 12px;
+				color: #343434;
+			}
+			.result-list a {
+				transition: color .3s;
+			}
+			.result-list a:hover {
+				color: rgb(1, 158, 61);
+			}
+			.result-list {
+				margin-bottom: 15px;
+				border-radius: 10px;
+				background: #f7f7f7;
+				padding: 5px
+			}
+			.result-list:last-child {
+				margin-bottom: 0;
+			}
+
+		</style>
+	<div id="app">
+		<div class="main-text">
+			Задача 5. Самостійно сформуйте масив даних та виведіть фрагмент на зразок поданого (дані не обов’язково повинні співпадати)
+		</div>
+		<h1 class="title">Задача 5</h1>
+		<div class="form-field">
+			<div class="result-list" v-for="item in workerList" :key="item.id">
+				<a target="_blank" :href="item.link">
+					<img :src="item.image" alt="image">
+				</a>
+				<div class="wrap">
+					<a target="_blank" :href="item.link" class="headline">{{item.title}}</a>
+					<a target="_blank" class="subtitle" :href="item.link">{{item.link}}</a>
+					<div class="description">{{item.description}}</div>
+				</div>
+			</div>
+			<a href="index.html" class="back">Повернутись до навігації</a>
+		</div>
+	</div>
+	<script>
+	const { createApp } = Vue;
+
+		const app = createApp({
+			data() {
+				return {
+					workerList: [
+						{
+							id: 1,
+							image: 'https://seeklogo.com/images/V/vuejs-logo-17D586B587-seeklogo.com.png',
+							link: 'https://vuejs.org/',
+							title: 'Vue.js - The Progressive JavaScript Framework | Vue.js',
+							description: 'Approachable. Builds on top of standard HTML, CSS and JavaScript with intuitive API and world-class documentation. · Performant. Truly reactive, compiler- ...',
+						},
+						{
+							id: 2,
+							image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png',
+							link: 'https://react.dev/',
+							title: 'React',
+							description: 'React is a community. It’s a place where you can ask for help, find opportunities, and meet new friends. You will meet both developers and designers, beginner '
+						},
+						{
+							id: 3,
+							image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Angular_full_color_logo.svg/800px-Angular_full_color_logo.svg.png',
+							link: 'https://angular.io/',
+							title: 'Angular',
+							description: 'Angular lets you start small and supports you as your team and apps grow.'
+						},
+						{
+							id: 4,
+							image: 'https://upload.wikimedia.org/wikipedia/en/6/69/Ember.js_Logo_and_Mascot.png',
+							link: 'https://emberjs.com/',
+							title: 'Ember.js - A framework for ambitious web developers',
+							description: 'Ember.js is a productive, battle-tested JavaScript framework for building modern web applications. It includes everything you need to build rich UIs that work .'
+						},
+						{
+							id: 5,
+							image: 'https://www.bairesdev.com/wp-content/uploads/2022/12/backbone-1.svg',
+							link: 'https://backbonejs.org/',
+							title: 'Backbone.js',
+							description: 'Backbone.js gives structure to web applications by providing models with key-value binding and custom events, collections with a rich API of enumerable ...'
+						}
+					],
+				}
+			}, 
+        }).mount('#app');
+	</script>
+	</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+				font-family: system-ui, -apple-system, sans-serif;
+			}
+			.form-field{
+				margin: 0 auto;
+				max-width: 400px;
+				padding: 10px;
+				background: #cef7cd;
+				border-radius: 10px;
+			}
+			.main-text {
+				font-size: 18px;
+				background: #d1d1d1;
+				padding: 5px;
+				margin-bottom: 30px;
+				text-align: center;
+			}
+			h1.title {
+				margin-bottom: 10px;
+				font-size: 30px;
+				text-align: center;
+			}
+			.back {
+				display: block;
+				background: rgb(85, 173, 85);
+				padding: 10px 20px;
+				text-align: center;
+				border-radius: 10px;
+				text-decoration: none;
+				transition: background .3s;
+				color: #fff;
+    			margin: 25px auto 0;
+			}
+			.back:hover {
+				background: rgb(86, 221, 86);
+			}
+			.name-list {
+				padding-left: 20px;
+			}
+			.name-list li {
+				margin-bottom: 10px;
+				list-style-type: disc;
+				font-weight: 500;
+				font-size: 20px;
+			}
+			.name-list li:last-child {
+				margin-bottom: 0;
+			}
+			.name-list li span:first-child {
+				min-width: 100px;
+				display: inline-flex;
+				vertical-align: top;
+			}
+			.name-list li span:last-child {
+				margin-left: 20px;
+				display: inline-flex;
+				vertical-align: top;
+			}
+
+		</style>
+	<div id="app">
+		<div class="main-text">
+			4. Вивести список як маркований список з елементами у форматі (name: salary)
+		</div>
+		<h1 class="title">Задача 4</h1>
+		<div class="form-field">
+			<ol class="name-list">
+				<li v-for="item in workerList" :key="item.id">
+					<span>{{ item.name }} </span>
+					<span>{{ item.salary }} грн.</span>
+				</li>
+			</ol>
+			<a href="index.html" class="back">Повернутись до навігації</a>
+		</div>
+	</div>
+	<script>
+	const { createApp } = Vue;
+
+		const app = createApp({
+			data() {
+				return {
+					workerList: [
+						{
+							id: 1,
+							name: 'Шевченко',
+							salary: 5000,
+						},
+						{
+							id: 2,
+							name: 'Кравець',
+							salary: 2000,
+						},
+						{
+							id: 3,
+							name: 'Токар',
+							salary: 3000,
+						},
+					],
+				}
+			}, 
+        }).mount('#app');
+	</script>
+	</body>
+</html>

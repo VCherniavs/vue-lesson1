@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .form-field{
+            margin: 0 auto;
+            max-width: 1000px;
+            padding: 10px;
+        }
+        .main-text {
+            font-size: 18px;
+            background: #d1d1d1;
+            padding: 5px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1.title {
+            margin-bottom: 10px;
+            font-size: 30px;
+            text-align: center;
+        }
+        .back {
+            display: block;
+            background: rgb(85, 173, 85);
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background .3s;
+            color: #fff;
+            margin: 25px auto 0;
+        }
+        .back:hover {
+            background: rgb(86, 221, 86);
+        }
+        .colums {
+            display: flex;
+        }
+        .column{
+            width: 33.333%;
+        }
+        .list-status{
+            margin-top: 10px;
+            padding-left: 25px;
+        }
+        .status {
+            counter-increment: status;
+            margin-bottom: 10px;
+        }
+        .status::marker{
+            content: "#" counter(status) ". ";
+            font-size: 12px;
+            color: #878787;
+        }
+        .status:last-child{
+            margin-bottom: 0;
+        }
+        .wrap{
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            text-transform: capitalize;
+        }
+        .wrap div {
+            flex-grow: 1;
+            flex-shrink: 1;
+        }
+        .button {
+            flex-grow: 0;
+            flex-shrink: 0;
+            margin-left: 5px;
+            padding: 5px 10px;
+            background-color: #dcdcdc;
+            border-radius: 5px;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .text{
+            font-size: 14px;
+            margin-top: 5px;
+            color: #878787;
+        }
+        .title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .wrap-tools {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .wrap-tools input {
+            width: 100%;
+            max-width: 300px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            background-color: #ededed;
+            border: none;
+        }
+        .column {
+            margin-left: 40px;
+        }
+        .column:first-child {
+            margin-left: 0;
+        }
+        .wrap-tools button {
+            flex-grow: 0;
+            flex-shrink: 0;
+            margin-left: 10px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: none;
+            background: #d9d9d9;
+            color: #000;
+            cursor: pointer;
+        }
+
+    </style>
+	<div id="app">
+		<div class="main-text">
+			Задача 6. Задача. На кухню поступають замовлення. Спочатку ми додаємо їх у список “Очікують на виконання”, <br> якщо повар береться робити — замовлення переходить у список “Виконуються”,   якщо замовлення виконано — переходить у список “Готові до виносу”. <br> Якщо натиснути на “Подано” - страва зникає з таблиці
+		</div>
+		<h1 class="title">Задача 6</h1>
+		<div class="form-field">
+			<div class="wrap-tools">
+				<input type="text" v-model="order">
+				<button @click="addOrder">Додати</button>
+			</div>
+			<div class="colums">
+				<div class="column">
+					<div class="title">Очікують на виконання:</div>
+                    <div v-if="waitingList.length === 0" class="text">Немає замовлень</div>
+					<ol v-else class="list-status">
+                        <li class="status" v-for="(item, index) in waitingList" key="item.id">
+                            <div class="wrap">
+                                <div>{{item.nameOrder}}</div>
+                                <button class="button" @click="entry(index)">Готувати</button>
+                            </div>
+                        </li>
+                    </ol>
+				</div>
+				<div class="column">
+					<div class="title">Виконуються:</div>
+                    <div v-if="processingList.length === 0" class="text">Кухар очікує замовлення</div>
+                    <ol class="list-status">
+                        <li class="status" v-for="(item, index) in processingList" key="item.id">
+                            <div class="wrap">
+                                <div>{{item.nameOrder}}</div>
+						        <button class="button" @click="ready(index)">Готово</button>
+                            </div>
+                        </li>
+                    </ol>
+				</div>
+				<div class="column">
+					<div class="title">Готові до виносу:</div>
+                    <div v-if="completedList.length === 0" class="text">Немає готових замовлень</div>
+                    <ol v-else class="list-status">
+                        <li class="status" v-for="(item, index) in completedList" key="item.id">
+                            <div class="wrap">
+                                <div>{{item.nameOrder}}</div>
+						        <button class="button" @click="remove(index)">Подано</button>
+                            </div>
+                        </li>
+                    </ol>
+				</div>
+			</div>
+			<a href="index.html" class="back">Повернутись до навігації</a>
+		</div>
+	</div>
+	<script>
+	const { createApp } = Vue;
+
+	const app = createApp({
+		data() {
+			return {
+				order: null,
+				waitingList: [],
+				processingList: [],
+				completedList: []
+			}
+		},
+		methods: {
+			addOrder() {
+				this.waitingList.push({
+					nameOrder: this.order 
+				});
+				this.order = null
+			},
+			entry(index) {
+                let arrOrderList = this.waitingList,
+                    arrProcessingList = this.processingList;
+
+                arrProcessingList.push(this.waitingList[index]);
+                arrOrderList.splice(index, 1);
+            },
+            ready(index){
+                let arrProcessingList = this.processingList,
+                    arrCompletedList = this.completedList;
+
+                arrCompletedList.push(this.processingList[index]);
+                arrProcessingList.splice(index, 1);
+            },
+            remove(index){
+                let arrCompletedList = this.completedList;
+
+                arrCompletedList.splice(index, 1);
+            }
+        }
+	}).mount('#app');
+	</script>
+	</body>
+</html>
