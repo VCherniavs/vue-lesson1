@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+			}
+			.form-field{
+				margin: 0 auto;
+				max-width: 400px;
+			}
+			.main-text {
+				font-size: 18px;
+				background: #d1d1d1;
+				padding: 5px;
+				margin-bottom: 30px;
+				text-align: center;
+			}
+			h1.title {
+				margin-bottom: 10px;
+				font-size: 30px;
+				text-align: center;
+			}
+			span.title {
+				font-size: 16px;
+				margin-right: 5px;
+				min-width: 66px;
+			}
+			.button {
+				background: #77a4e8;
+				border-radius: 10px;
+				padding: 10px 30px;
+				border: none;
+				color: #fff;
+				transition: background .3s;
+				cursor: pointer;
+				width: 100%;
+			}
+			.button:hover {
+				background: #5094f9;
+			}
+			label {
+				display: flex;
+				align-items: center;
+				margin-bottom: 10px;
+			}
+			input {
+				width: 100%;
+				border: 1px solid #d1d1d1;
+				padding: 10px;
+				border-radius: 10px;
+			}
+			.box {
+				display: flex;
+				margin-top: 10px;
+			}
+			.back {
+				width: 100%;
+				background: rgb(85, 173, 85);
+				padding: 10px 20px;
+				display: flex;
+				justify-content: center;
+				border-radius: 10px;
+				text-decoration: none;
+				transition: background .3s;
+				color: #fff;
+			}
+			.back:hover {
+				background: rgb(86, 221, 86);
+			}
+			.success {
+				margin-top: 20px;
+				display: flex;
+				justify-content: center;
+			}
+			.error {
+				font-weight: 700;
+				margin-top: 10px;
+				font-size: 16px;
+				color: rgb(108, 0, 0);
+			}
+			.error-color {
+				color: red;
+			}
+			.special-color {
+				color: blue;
+			}
+
+
+		</style>
+	<div id="app">
+		<div class="main-text">
+			Задача 1. Вводимо логіна і пароль. Якщо логін вірний відображаємо смайл. Якщо ні, то: <br>
+			1) якщо логін = Іван – колір повідомлення про помилку синій <br>
+			2) якщо хтось інший, то колір повідомлення червоний
+		</div>
+		<h1 class="title">Задача 1</h1>
+		<div class="form-field">
+			<label>
+				<span class="title">Login:</span>
+				<input min="1" type="text" v-model="loginValue">
+			</label>	
+			<label>
+				<span class="title">Password:</span>
+				<input min="1" type="number" v-model="passwordValue">
+			</label>
+			<button class="button" @click="checkCredentials">Вперед</button>
+			<div v-if="authSuccess" class="success">
+				<img style="width: 40px; height: 40px;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/SNice.svg/800px-SNice.svg.png" alt="image">
+			</div>
+			<div :class="[ 'error', errorColor]" v-if="errorFlag">
+				<span>Помилка: Невірний логін або пароль</span>
+			</div>
+			<div class="error" v-if="errorEmpty">
+				<span>Будь ласка, не залишайте поля пустими</span>
+			</div>
+			<div class="box">
+				<a href="index.html" class="back">Повернутись до навігації</a>
+			</div>
+		</div>
+	</div>
+	<script>
+	const { createApp } = Vue
+
+	const app = createApp({
+        data() {
+            return {
+                loginValue: null,
+                passwordValue: null,
+                authSuccess: false,
+                errorFlag: false,
+				errorEmpty: false
+            };
+        },
+        computed: {
+			errorColor() {
+				if (this.loginValue === 'Ivan') {
+					return 'special-color';
+				} else {
+					return 'error-color';
+				}
+			},
+		},
+		methods: {
+			checkCredentials() {
+				if (this.loginValue === 'Ivan' && this.passwordValue == 123) {
+					this.authSuccess = true;
+					this.errorFlag = false;
+				} else if (this.loginValue === null || this.passwordValue == null) {
+					this.errorEmpty = true;
+					this.authSuccess = false;
+				} else {
+					this.errorFlag = true;
+					this.errorEmpty = false;
+					this.authSuccess = false;
+				}
+			},
+		},
+    }).mount('#app');
+	</script>
+	</body>
+</html>

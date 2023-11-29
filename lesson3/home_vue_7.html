@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+		<style>
+			* {
+				padding: 0;
+				margin: 0;
+				box-sizing: border-box;
+				font-family: system-ui, -apple-system, sans-serif;
+			}
+			.form-field{
+				margin: 0 auto;
+				max-width: 1000px;
+				padding: 10px;
+			}
+			.main-text {
+				font-size: 18px;
+				background: #d1d1d1;
+				padding: 5px;
+				margin-bottom: 30px;
+				text-align: center;
+			}
+			h1.title {
+				margin-bottom: 10px;
+				font-size: 30px;
+				text-align: center;
+			}
+			.back {
+				display: block;
+				background: rgb(85, 173, 85);
+				padding: 10px 20px;
+				text-align: center;
+				border-radius: 10px;
+				text-decoration: none;
+				transition: background .3s;
+				color: #fff;
+    			margin: 25px auto 0;
+			}
+			.back:hover {
+				background: rgb(86, 221, 86);
+			}
+			.result-list {
+				display: flex;
+			}
+			img {
+				width: 40px;
+				height: 40px;
+				object-fit: contain;
+				flex-grow: 0;
+				flex-shrink: 0;
+				margin-right: 5px;
+			}
+			.headline {
+				font-size: 20px;
+				font-weight: 700;
+				display: inline-flex;
+				vertical-align: top;
+				color: #0023c2;
+				margin-bottom: 5px;
+				text-decoration: none;
+			}
+			.subtitle {
+				display: flex;
+				margin-bottom: 5px;
+				font-size: 12px;
+				color: #343434;
+			}
+			.wrap {
+				display: flex;
+				margin:  0 -10px;
+			}
+			.wrap .row {
+				width: 50%;
+				padding: 0 10px;
+			}
+			.form-select {
+				width: 100%;
+				padding: 10px;
+				border: 1px solid #d1d1d1;
+    			border-radius: 10px;
+			}
+			.box {
+				display: flex;
+				align-items: center;
+			}
+			.box span {
+				flex-grow: 0;
+				flex-shrink: 0;
+				margin-right: 10px;
+				font-weight: 500;
+			}
+			.error {
+				font-size: 18px;
+				color: rgb(201, 23, 23);
+				font-weight: 500;
+				margin-top: 20px;
+			}
+			.result-box {
+				text-align: center;
+				list-style-type: none;
+				padding: 10px;
+				border: 1px solid #dedede;
+				border-radius: 10px;
+				margin-top: 20px;
+			}
+			.result-box li {
+				margin-bottom: 10px;
+				display: flex;
+			}
+			.result-box li:last-child {
+				margin-bottom: 0;
+			}
+			.result-box span {
+				font-weight: 500;
+				width: 33.333%;
+			}
+			.headline-text {
+				font-weight: 700;
+				display: flex;
+				margin-bottom: 20px;
+			}
+			.headline-text span {
+				width: 33.333%;
+				font-size: 20px;
+			}
+
+		</style>
+	<div id="app">
+		<div class="main-text">
+			Задача 8. Дано список автомобілів (марка, рік випуску, ціна). Сформувати елементи для фільтрування з використанням випадаючого списку <br>
+			 (контент цих випадаючих списків сформувати у залежності від переданого списку).
+		</div>
+		<h1 class="title">Задача 5</h1>
+		<div class="form-field">
+			<div class="wrap">
+				<div class="row">
+					<div class="box">
+						<span>Марка</span>
+						<select class="form-select" v-model="selectedBrands">
+							<option value="" selected>Оберіть марку авто</option>
+							<option :value="item.brand" v-for="(item, index) in cars" :key="index">{{item.brand}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="box">
+						<span>Рік випуску</span>
+						<select class="form-select" v-model="selectedYears">
+							<option value="" selected>Оберіть рік авто</option>
+							<option :value="item.year" v-for="(item, index) in cars" :key="index">{{item.year}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="result-box">
+				<div class="headline-text">
+					  <span>Марка</span> 
+					  <span>Рік випуску</span>
+					  <span>Вартість</span>
+				</div>
+				<ul>
+					<li v-for="car in filteredCarsList" :key="car.id">
+					  <span>{{ car.brand }} </span> 
+					  <span >{{ car.year }}</span>
+					  <span>{{ car.price }}</span>
+					</li>
+				</ul>
+			</div>
+			<div class="error" v-if="errorAlert">
+				Варіантів не знайдено
+			</div>
+			<a href="index.html" class="back">Повернутись до навігації</a>
+		</div>
+	</div>
+	<script>
+	const { createApp } = Vue;
+		
+		createApp({
+			data() {
+				return {
+					cars: [
+						{
+							brand: "BMW",
+							year: 2019,
+							price: 30000,
+						},
+						{
+							brand: "Toyota",
+							year: 2015,
+							price: 28000,
+						},
+						{
+							brand: "Mercedes",
+							year: 2014,
+							price: 50000,
+						},
+						{
+							brand: "Tesla",
+							year: 2021,
+							price: 70000,
+						},
+						{
+							brand: "Volkswagen",
+							year: 2016,
+							price: 25000,
+						},
+						{
+							brand: "Ford",
+							year: 2020,
+							price: 20000,
+						},
+						{
+							brand: "Toyota",
+							year: 2016,
+							price: 10000,
+						},
+						{
+							brand: "BMW",
+							year: 2019,
+							price: 21000,
+						},
+						{
+							brand: "Mercedes-Benz",
+							year: 2021,
+							price: 36000,
+						},
+						{
+							brand: "Tesla",
+							year: 2018,
+							price: 50000,
+						},
+						{
+							brand: "Volkswagen",
+							year: 2017,
+							price: 15000,
+						},
+						{
+							brand: "Ford",
+							year: 2016,
+							price: 9000,
+						},
+						{
+							brand: "Toyota",
+							year: 2020,
+							price: 18000,
+						},
+						{
+							brand: "BMW",
+							year: 2023,
+							price: 50000,
+						},
+						{
+							brand: "Mercedes-Benz",
+							year: 2016,
+							price: 19000,
+						},
+						{
+							brand: "Tesla",
+							year: 2022,
+							price: 60000,
+						},
+						{
+							brand: "Volkswagen",
+							year: 2018,
+							price: 17000,
+						},
+						{
+							brand: "Ford",
+							year: 2019,
+							price: 13000,
+						},
+					],
+					selectedBrands: '',
+					selectedYears: '',
+					errorAlert: false,
+				}
+			},
+			computed: {
+				filteredCarsList() {
+					if (this.errorAlert) {
+						errorAlert = true
+					}
+
+					let filteredCars = this.cars.filter(car => 
+						(this.selectedBrands == "" || car.brand == this.selectedBrands) &&
+						(this.selectedYears == "" || car.year == this.selectedYears),
+					);		
+      				this.errorAlert = this.selectedYears !== "" && filteredCars.length < 1;
+
+					return filteredCars;
+				}
+    
+			},
+		}).mount('#app')
+	</script>
+	</body>
+</html>
+
+
+
+
+
+
+

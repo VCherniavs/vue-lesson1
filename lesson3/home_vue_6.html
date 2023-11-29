@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+	</head>
+	<body>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .form-field{
+            margin: 0 auto;
+            max-width: 1000px;
+            padding: 10px;
+        }
+        .main-text {
+            font-size: 16px;
+            background: #d1d1d1;
+            padding: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1.title {
+            margin-bottom: 10px;
+            font-size: 30px;
+            text-align: center;
+        }
+        .back {
+            display: block;
+            background: rgb(85, 173, 85);
+            padding: 10px 20px;
+            text-align: center;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: background .3s;
+            color: #fff;
+            margin: 25px auto 0;
+        }
+        .back:hover {
+            background: rgb(86, 221, 86);
+        }
+        .wrap-box {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        div.title {
+            font-size: 16px;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #1e1e1e;
+            background: #f0f593;
+            padding: 15px;
+        }
+        .column {
+            width: calc(50% - 4px);
+            margin: 0 2px;
+            border: 1px solid #1e1e1e;
+            border-radius: 5px;
+            overflow: hidden;
+            background: #f6f3f3;
+        }
+        .column:last-child {
+            margin-right: 0;
+        }
+        .column .item {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .name {
+            padding: 15px;
+            color: #4f4c4c;
+            display: block;
+            cursor: pointer;
+            transition: background-color .3s;
+        }
+        .name:hover {
+            background-color: #dadada;
+        }
+        .name.select{
+            background-color: #dadada;
+        }
+        .name.selected{
+            opacity: .5;
+            pointer-events: none;
+            cursor: default;
+        }
+        .group-button{
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .btn {
+            display: flex;
+            padding: 12px 30px;
+            cursor: pointer;
+            background-color: #f0f594;
+            border-radius: 5px;
+            color: #6d6f3d;
+            border: 1px solid #d9dd84;
+        }
+        .btn:disabled{
+            opacity: .5;
+            pointer-events: none;
+            background-color: rgba(216, 214, 214, .5);
+            border-color: rgba(216, 214, 214, .5);
+            color: #333;
+        }
+        .result{
+            background: rgba(216, 214, 214, .5);
+            border: 1px solid #1e1e1e;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .result-box {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #4f4c4c;
+        }
+        .result-box:nth-child(odd) {
+            background: rgb(224, 224, 224);
+        }
+        .result-box .btn{
+            border-color: #dd8484;
+            color: #6f3d3d;
+            background-color: #f59494;
+        }
+        .pair{
+            flex-shrink: 1;
+            flex-grow: 1;
+        }
+    </style>
+    <div>
+        <div class="main-text">
+            Задача 6. Пари для танців. Поступово вибираємо хлопця, дівчину і додаємо у обрані пари. <br> Пару можна видалити. Поки не вибрано хлопця і дівчину кнопка «Додати» заблокована. <br> Якщо не вистачає хлопців або дівчат вибір також блокується.
+        </div>
+        <h1 class="title">Задача 6</h1>
+        <div class="form-field" id="app">
+            <div class="wrap-box">
+                <div class="column">
+                    <div class="title">Дівчата: </div>
+                    <div class="item" v-for="(item, index) in girlsList" :key="item.id">
+                        <span class="name" @click="choiceGirl(index)" :class="{ 'select': girl === item, 'selected': disabledChoiceGirl(item) }">{{item.name}}</span>
+                    </div>
+                </div>
+                <div class="column">
+                    <div class="title">Хлопці: </div>
+                    <div class="item" v-for="(item, index) in boysList" :key="item.id">
+                        <span class="name" @click="choiceBoy(index)" :class="{ 'select': boy === item, 'selected': disabledChoiceBoy(item) }">{{item.name}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="group-button">
+                <button type="button" class="btn" @click="selected" :disabled="!createCouple">Додати</button>
+            </div>
+            <div class="result" v-if="selectList != ''">
+                <div class="title">Пара на мільйон: </div>
+                <div class="result-box" v-for="(item, index) in selectList" :key="item.id">
+                    <span class="pair">{{item.nameGirl}} - {{item.nameBoy}}</span>
+                    <button class="btn" @click="removePair(index)">Видалити</button>
+                </div>
+            </div>
+            <a href="index.html" class="back">Повернутись до навігації</a>
+        </div>
+    </div>
+    <script>
+    const { createApp } = Vue;
+    
+    const app = createApp({
+        data() {
+            return {
+                status: false,
+                girl: null,
+                boy: null,
+                selectList: [],
+                girlsList: [
+                    {
+                        id: 1,
+                        name: 'Ольга'
+                    },
+                    {
+                        id: 2,
+                        name: 'Юлія'
+                    },
+                    {
+                        id: 3,
+                        name: 'Яна'
+                    },
+                    {
+                        id: 4,
+                        name: 'Анастасія'
+                    },
+                    {
+                        id: 5,
+                        name: 'Олена'
+                    },
+                ],
+                boysList: [
+                    {
+                        id: 1,
+                        name: 'Іван'
+                    },
+                    {
+                        id: 2,
+                        name: 'Петро'
+                    },
+                    {
+                        id: 3,
+                        name: 'Тарас'
+                    },
+                    {
+                        id: 4,
+                        name: 'Андрій'
+                    },
+                    {
+                        id: 5,
+                        name: 'Степан'
+                    },
+                ]
+            };
+        },
+        computed: {
+            createCouple() {
+                return this.girl && this.boy !== null ? status = true : status = false;
+            }
+        },
+        methods: {
+            choiceGirl(index) {
+                this.girl = this.girlsList[index];
+            },
+            choiceBoy(index) {
+                this.boy = this.boysList[index];
+            },
+
+            disabledChoiceGirl(item) {
+                return this.selectList.some(pair => pair.IDGirl === item.id);
+            },
+            disabledChoiceBoy(item) {
+                return this.selectList.some(pair => pair.IDBoy === item.id);
+            },
+            
+            selected(){
+                if (this.girl && this.boy) {
+                    this.selectList.push(
+                        {
+                            IDGirl: this.girl.id,
+                            nameGirl: this.girl.name,
+                            IDBoy: this.boy.id,
+                            nameBoy: this.boy.name
+                        }
+                    )
+
+                    this.girl = null;
+                    this.boy = null;
+                }
+            },
+            removePair(index) {
+                this.selectList.splice(index, 1);
+            }
+        }
+    }).mount('#app');
+
+    </script>
+    
+	</body>
+</html>
